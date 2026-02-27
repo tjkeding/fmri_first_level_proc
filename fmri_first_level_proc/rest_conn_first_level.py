@@ -373,8 +373,8 @@ def main():
     parser.add_argument("--num_cores", type=int, required=True)
     parser.add_argument("--fd_threshold", type=float, required=True,
                         help="Framewise displacement threshold (mm) for motion censoring.")
-    parser.add_argument("--censor_prev_tr", action='store_true', default=True,
-                        help="Also censor the TR before each high-motion TR (default: True).")
+    parser.add_argument("--censor_prev_tr", action='store_true', default=False,
+                        help="Also censor the TR before each high-motion TR (default: False).")
     parser.add_argument("--notch_filter_band", type=float, nargs=2, default=None, required=False,
                         help="Notch filter Hz band [low high] for respiratory artifact removal (default: disabled).")
     parser.add_argument("--tr", type=float, required=True,

@@ -450,8 +450,10 @@ def main():
     parser.add_argument("--num_cores", type=int, required=True)
     parser.add_argument("--fd_threshold", type=float, required=True,
                         help="Framewise displacement threshold (mm) for motion censoring.")
-    parser.add_argument("--censor_prev_tr", action='store_true', default=True,
-                        help="Also censor the TR before each high-motion TR (default: True).")
+    parser.add_argument("--censor_prev_tr", action='store_true', default=False,
+                        help="Also censor the TR before each high-motion TR (default: False).")
+    parser.add_argument("--include_motion_derivs", action='store_true', default=False,
+                        help="Include temporal derivatives of motion regressors (12 columns instead of 6; default: False).")
     parser.add_argument("--tr", type=float, required=True,
                         help="Repetition time in seconds.")
 

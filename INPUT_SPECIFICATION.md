@@ -398,31 +398,31 @@ Schema varies by analysis type:
 
 ### Task Activation (`task_act`)
 
-- `{out_file_pre}_bucket_stats_REML+tlrc` — AFNI bucket dataset with condition betas, t-stats, and contrasts
+- `{out_file_pre}_concat_bucket_stats.nii.gz` — AFNI bucket dataset with condition betas, t-stats, and contrasts
 - `{out_file_pre}_concat_censor.1D` — generated censor file
 - `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
-- `{out_file_pre}_{label}_onset.txt` — per-condition AFNI onset files
+- `{out_file_pre}_concat_{label}_onsets.txt` — per-condition AFNI onset files
 - `{out_file_pre}_qc_summary.json` — QC summary
 - Extracted parcel stats (if `extraction` enabled): CSV files with parcel-level statistics
 
 ### Task Connectivity (`task_conn`)
 
-- `{out_file_pre}_{cond}_LSS_betas+tlrc` — per-condition trial-level beta series from 3dLSS
+- `{out_file_pre}_concat_bseries_{condition}.nii.gz` — per-condition trial-level beta series from 3dLSS
 - `{out_file_pre}_concat_censor.1D` — generated censor file
 - `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
 - `{out_file_pre}_qc_summary.json` — QC summary
-- Extracted parcel beta series (if `extraction` enabled): numpy arrays
-- Connectivity matrices (if `connectivity` enabled): numpy arrays
+- Extracted parcel beta series (if `extraction` enabled): CSV files
+- Connectivity matrices (if `connectivity` enabled): tab-delimited text files
 
 ### Resting-State Connectivity (`rest_conn`)
 
-- `{out_file_pre}_run{N}_res_dtseries+tlrc` — per-run residual time series from 3dTproject
-- `{out_file_pre}_concat_res_dtseries+tlrc` — concatenated residual time series
+- `{out_file_pre}_run{N}_residual_dtseries.nii.gz` — per-run residual time series from 3dTproject
+- `{out_file_pre}_concat_residual_dtseries.nii.gz` — concatenated residual time series
 - `{out_file_pre}_run{N}_censor.1D` — per-run generated censor files
 - `{out_file_pre}_run{N}_motion_prepared.txt` — per-run validated/truncated motion regressors
 - `{out_file_pre}_qc_summary.json` — QC summary
-- Extracted parcel time series (if `extraction` enabled): numpy arrays
-- Connectivity matrices (if `connectivity` enabled): numpy arrays
+- Extracted parcel time series (if `extraction` enabled): CSV files
+- Connectivity matrices (if `connectivity` enabled): tab-delimited text files
 
 ---
 

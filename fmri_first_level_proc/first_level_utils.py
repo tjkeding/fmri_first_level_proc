@@ -614,10 +614,15 @@ def check_trial_survival(stim_df, cond_labels, censor_path, tr, logger):
             if 0 <= tr_idx < len(censor_data) and censor_data[tr_idx] == 1:
                 n_surviving += 1
         survival[cond] = n_surviving
-        if n_surviving == 0:
-            logger.warning("Condition '%s': 0 of %d trials survive censoring. "
-                           "This condition will have no usable data.", cond, n_total)
-        elif n_surviving < 3:
+        if n_surviving < 2:
+            logger.error("Condition '%s': only %d of %d trials survive censoring. "
+                         "Cannot reliably estimate this condition (minimum 2 required). Aborting.",
+                         cond, n_surviving, n_total)
+            sys.exit(1)
+        elif n_surviving == 2:
+            logger.warning("Condition '%s': only 2 of %d trials survive censoring. "
+                           "Estimate will have very low power.", cond, n_total)
+        elif n_surviving < 5:
             logger.warning("Condition '%s': only %d of %d trials survive censoring. "
                            "Estimates may be unreliable.", cond, n_surviving, n_total)
         else:
@@ -795,11 +800,14 @@ def run_afni_command(command, capture_output=False, description="", logger=None)
         logger.debug("Running: %s", " ".join(command))
 
     try:
+        env = os.environ.copy()
+        env['AFNI_COMPRESSOR'] = 'GZIP'
         result = subprocess.run(
             command,
             capture_output=True,
             text=True,
             check=True,
+            env=env,
         )
         if capture_output:
             return result.stdout

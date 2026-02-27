@@ -1,0 +1,22 @@
+# ============================================================================
+# Conda environment for fmri_first_level_proc
+# ============================================================================
+# Create:  conda env create -f environment.yaml
+# Activate: conda activate fmri_first_level
+# Update:  conda env update -f environment.yaml --prune
+#
+# NOTE: AFNI must be installed separately (not available via conda-forge).
+#       See https://afni.nimh.nih.gov/pub/dist/doc/htmldoc/background_install/main_toc.html
+# ============================================================================
+
+name: fmri_first_level
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python>=3.8
+  - numpy
+  - pandas
+  - pyyaml

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fmri_first_level_proc"
+version = "2.0.0"
+description = "General-purpose first-level fMRI analysis framework built on AFNI."
+readme = "README.md"
+requires-python = ">=3.8"
+authors = [
+    { name = "Taylor J. Keding, Ph.D." },
+]
+
+dependencies = [
+    "numpy",
+    "pandas",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[project.scripts]
+run-first-level = "fmri_first_level_proc.run_first_level:main"
+
+[tool.setuptools.packages.find]
+include = ["fmri_first_level_proc*"]

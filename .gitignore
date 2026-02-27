@@ -1,0 +1,19 @@
+# Ignore everything by default
+*
+
+# Core pipeline files
+!.gitignore
+!environment.yaml
+!example_config.yaml
+!example_subj.timing.csv
+!pyproject.toml
+!README.md
+!INPUT_SPECIFICATION.md
+!fmri_first_level_proc/
+!fmri_first_level_proc/__init__.py
+!fmri_first_level_proc/first_level_config.py
+!fmri_first_level_proc/first_level_utils.py
+!fmri_first_level_proc/rest_conn_first_level.py
+!fmri_first_level_proc/run_first_level.py
+!fmri_first_level_proc/task_act_first_level.py
+!fmri_first_level_proc/task_conn_first_level.py

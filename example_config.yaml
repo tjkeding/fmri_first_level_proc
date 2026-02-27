@@ -1,0 +1,179 @@
+# ============================================================================
+# EXAMPLE YAML CONFIG FOR fMRI FIRST-LEVEL PROCESSING
+# ============================================================================
+#
+# Usage:
+#   python run_first_level.py --config example_config.yaml --dry-run
+#   python run_first_level.py --config example_config.yaml
+#   python run_first_level.py --config example_config.yaml --analyses 0 2
+#      --analyses 0 2 => only first and third analysis blocks will be run
+#
+# This file demonstrates all three analysis types with every available option.
+# Replace placeholder paths with real file paths before running.
+
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# GLOBAL SETTINGS
+# --------------------------------------------------------------------------
+# These values apply uniformly to all analysis blocks. They cannot be
+# overridden per-block.
+
+global:
+  num_cores: 1                   # CPU cores for AFNI parallel processing
+  tr: 0.8                        # Repetition time in seconds (applies to all scans)
+  template_path: null            # Path to shared ROI template (.nii.gz), or null
+  force_diff_atlas: false        # true = allow atlas mismatch (USE WITH CAUTION)
+
+# --------------------------------------------------------------------------
+# ANALYSIS BLOCKS
+# --------------------------------------------------------------------------
+# Each entry is one analysis to run. They execute in order (top to bottom).
+
+analyses:
+
+  # ========================================================================
+  # TASK ACTIVATION (type: task_act)
+  # ========================================================================
+  # Runs first-level regression with 3dDeconvolve, optionally extracts
+  # condition/contrast-specific maps and parcel-level statistics.
+  - name: "nback_activation"
+    type: "task_act"
+
+    # -- Per-participant input file paths --
+    paths:
+      scan_path: "/path/to/subj001_nback_concat.nii.gz"
+      task_timing_path: "/path/to/subj001_nback_timing.csv"
+      motion_path: "/path/to/subj001_nback_motion.txt"
+      CSF_path: null             # mean CSF BOLD signal per TR, or null
+      WM_path: null              # mean WM BOLD signal per TR, or null
+
+    # -- Output settings --
+    out_dir: "/path/to/output/subj001/nback_act"
+    out_file_pre: "subj001_nback_baseline"
+
+    # -- Condition labels (must match CONDITION column in timing CSV) --
+    cond_labels: ["stimFear", "stimSad", "stimNeu"]
+
+    # -- Block settings --
+    remove_previous: false       # true = delete all files in out_dir before running
+    average_type: "mean"         # "mean" or "median" for parcel averaging
+    fd_threshold: 0.9            # FD threshold (mm) for motion censoring
+    censor_prev_tr: true         # Also censor the TR before each high-motion TR
+    hrf_model: "GAM"             # "GAM" | "BLOCK" | "dmBLOCK" | "SPMG1" | "custom"
+    custom_hrf: null             # Required when hrf_model is "custom", e.g. "TENT(0,14,8)"
+    include_motion_derivs: false # true = use first 12 columns (base + derivs); false = use first 6 columns only
+    use_tissue_derivs: false     # true = include first temporal derivatives of tissue signals (CSF/WM) as additional regressors
+
+    # -- Contrasts --
+    # functions: null = disabled; list of equations = enabled
+    contrasts:
+      functions:
+        - "1*stimFear-1*stimNeu"
+        - "1*stimSad-1*stimNeu"
+      labels:
+        - "Fear-Neutral"
+        - "Sad-Neutral"
+
+    # -- Extraction --
+    extraction:
+      extract: true              # true = enable extraction, false = skip
+      extract_labels: ["stimFear", "stimSad", "Fear-Neutral", "Sad-Neutral"]
+      extract_stat: "z"          # "z" | "t" | "r"
+      extract_out_file_pre: "subj001_nback_baseline_Shen368"
+      extract_resids: false      # true = extract residuals as well as stats
+
+  # ========================================================================
+  # TASK CONNECTIVITY (type: task_conn)
+  # ========================================================================
+  # Generates beta series via 3dLSS, optionally extracts parcel-level beta
+  # series, and optionally computes functional connectivity.
+  - name: "nback_connectivity"
+    type: "task_conn"
+
+    paths:
+      scan_path: "/path/to/subj001_nback_concat.nii.gz"
+      task_timing_path: "/path/to/subj001_nback_timing.csv"
+      motion_path: "/path/to/subj001_nback_motion.txt"
+      CSF_path: null            # mean CSF BOLD signal per TR, or null
+      WM_path: null             # mean WM BOLD signal per TR, or null
+
+    out_dir: "/path/to/output/subj001/nback_conn"
+    out_file_pre: "subj001_nback_baseline"
+
+    # -- Condition beta labels --
+    # Conditions for which trial-level beta series will be estimated.
+    cond_beta_labels: ["stimFear", "stimSad", "stimNeu"]
+
+    # -- Block settings --
+    remove_previous: false       # true = delete all files in out_dir before running
+    average_type: "mean"         # "mean" or "median" for parcel averaging
+    fd_threshold: 0.9            # FD threshold (mm) for motion censoring
+    censor_prev_tr: true         # Also censor the TR before each high-motion TR
+    hrf_model: "GAM"             # "GAM" | "BLOCK" | "dmBLOCK" | "SPMG1" | "custom"
+    custom_hrf: null             # Required when hrf_model is "custom", e.g. "TENT(0,14,8)"
+    include_motion_derivs: false # true = use first 12 columns (base + derivs); false = use first 6 columns only
+    use_tissue_derivs: false     # true = include first temporal derivatives of tissue signals (CSF/WM) as additional regressors
+
+    # -- Extraction --
+    extraction:
+      extract_pbseries: true     # true = extract parcel beta series, false = skip
+      extract_out_file_pre: "subj001_nback_baseline_Shen368"
+
+    # -- Connectivity --
+    connectivity:
+      calc_conn: "parcellated"   # null = disabled; "seed_to_voxel" | "parcellated" = enabled
+      conn_out_file_pre: "subj001_nback_baseline_Shen368"
+      pcorr: false               # use partial correlation
+      fishZ: true                # use Fisher Z transform on correlation coefficients
+
+  # ========================================================================
+  # RESTING-STATE CONNECTIVITY (type: rest_conn)
+  # ========================================================================
+  # Generates residual time series via 3dTproject, optionally extracts
+  # parcel-level time series, and optionally computes functional connectivity.
+  # NOTE: rest_conn uses lists for paths (one entry per run).
+  - name: "rest_connectivity"
+    type: "rest_conn"
+
+    # -- Per-run input file paths (all lists must be the same length) --
+    paths:
+      scan_paths:
+        - "/path/to/subj001_rest_run1.nii.gz"
+        - "/path/to/subj001_rest_run2.nii.gz"
+      motion_paths:
+        - "/path/to/subj001_rest_run1_motion.txt"
+        - "/path/to/subj001_rest_run2_motion.txt"
+      CSF_paths:
+        - "/path/to/subj001_rest_run1_CSF.txt"
+        - "/path/to/subj001_rest_run2_CSF.txt"
+      WM_paths:
+        - "/path/to/subj001_rest_run1_WM.txt"
+        - "/path/to/subj001_rest_run2_WM.txt"
+      GS_paths: null             # null = no global signal regression; list of paths = enable GSR
+
+    out_dir: "/path/to/output/subj001/rest_conn"
+    out_file_pre: "subj001_rest_baseline"
+
+    # -- Block settings --
+    remove_previous: false       # true = delete all files in out_dir before running
+    average_type: "mean"         # "mean" or "median" for parcel averaging
+    fd_threshold: 0.9            # FD threshold (mm) for motion censoring
+    censor_prev_tr: true         # Also censor the TR before each high-motion TR
+    notch_filter_band: [0.31, 0.43]  # Respiration notch filter Hz band (null = disabled)
+    bandpass: [0.01, 0.1]        # Required: [low, high] Hz
+    motion_deriv_degree: 2       # Required: number of derivative orders (total motion cols = 6 * degree); e.g. 2 = base + 1st derivs = 12 cols
+    keep_run_res_dtseries: true  # true = keep all run-specific dtseries (false to save space)
+    use_tissue_derivs: false     # true = include first temporal derivatives of tissue signals (CSF/WM/GS) as additional regressors
+
+    # -- Extraction --
+    extraction:
+      extract_ptseries: true     # true = extract parcel time series, false = skip
+      extract_out_file_pre: "subj001_rest_baseline_Shen368"
+
+    # -- Connectivity --
+    connectivity:
+      calc_conn: "parcellated"   # null = disabled; "seed_to_voxel" | "parcellated" = enabled
+      conn_out_file_pre: "subj001_rest_baseline_R_amyg"
+      pcorr: false               # use partial correlation
+      fishZ: true                # use Fisher Z transform on correlation coefficients

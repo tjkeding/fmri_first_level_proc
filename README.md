@@ -146,7 +146,7 @@ Each analysis writes outputs to `out_dir` using the `out_file_pre` prefix. All a
 
 - `{out_file_pre}_concat_bucket_stats.nii.gz` — AFNI bucket dataset with condition betas, t-stats, and contrasts
 - `{out_file_pre}_concat_censor.1D` — generated censor file
-- `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
+- `{out_file_pre}_concat_motion_prepared.1D` — validated/truncated motion regressors
 - `{out_file_pre}_concat_{label}_onsets.txt` — per-condition AFNI onset files
 - Extracted parcel stats (if `extraction` enabled): CSV files with parcel-level statistics
 
@@ -154,7 +154,7 @@ Each analysis writes outputs to `out_dir` using the `out_file_pre` prefix. All a
 
 - `{out_file_pre}_concat_bseries_{condition}.nii.gz` — per-condition trial-level beta series from 3dLSS
 - `{out_file_pre}_concat_censor.1D` — generated censor file
-- `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
+- `{out_file_pre}_concat_motion_prepared.1D` — validated/truncated motion regressors
 - Extracted parcel beta series (if `extraction` enabled): CSV files
 - Connectivity matrices (if `connectivity` enabled): tab-delimited text files (correlation/partial correlation, optionally Fisher Z-transformed)
 - Connectivity contrast outputs (if `contrasts` enabled with connectivity): contrast-level matrices or NIfTI maps following the same naming convention as condition outputs
@@ -164,7 +164,7 @@ Each analysis writes outputs to `out_dir` using the `out_file_pre` prefix. All a
 - `{out_file_pre}_run{N}_residual_dtseries.nii.gz` — per-run residual time series from 3dTproject
 - `{out_file_pre}_concat_residual_dtseries.nii.gz` — concatenated residual time series
 - `{out_file_pre}_run{N}_censor.1D` — per-run generated censor files
-- `{out_file_pre}_run{N}_motion_prepared.txt` — per-run validated/truncated motion regressors
+- `{out_file_pre}_run{N}_motion_prepared.1D` — per-run validated/truncated motion regressors
 - Extracted parcel time series (if `extraction` enabled): CSV files
 - Connectivity matrices (if `connectivity` enabled): tab-delimited text files
 

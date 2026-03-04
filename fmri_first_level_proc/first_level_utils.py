@@ -86,7 +86,7 @@ def prepare_motion_file(motion_path, use_columns, out_dir, out_prefix, label, lo
         sys.exit(1)
     # Truncate to requested columns
     truncated = data[:, :use_columns]
-    prepared_path = os.path.join(out_dir, f"{out_prefix}_{label}_motion_prepared.txt")
+    prepared_path = os.path.join(out_dir, f"{out_prefix}_{label}_motion_prepared.1D")
     np.savetxt(prepared_path, truncated, fmt="%.8f", delimiter="\t")
     if ncols > use_columns:
         logger.info("Motion file '%s': using %d of %d columns.", motion_path, use_columns, ncols)

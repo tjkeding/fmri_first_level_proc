@@ -348,7 +348,7 @@ stimNeu,66.462,3.967,1
   - `task_act` / `task_conn` with `include_motion_derivs: true` -> minimum 12 columns used
   - `rest_conn` with `motion_deriv_degree: N` -> minimum `6 * N` columns used
 - **Truncation:** If the file contains more columns than needed, extra columns are silently truncated to the required count. A log message is emitted when this occurs.
-- **Prepared file:** The pipeline writes a validated, truncated copy to `out_dir` as `{out_file_pre}_concat_motion_prepared.txt` (task) or `{out_file_pre}_run{N}_motion_prepared.txt` (rest_conn). The prepared file is tab-delimited with 8 decimal places.
+- **Prepared file:** The pipeline writes a validated, truncated copy to `out_dir` as `{out_file_pre}_concat_motion_prepared.1D` (task) or `{out_file_pre}_run{N}_motion_prepared.1D` (rest_conn). The prepared file is tab-delimited with 8 decimal places.
 
 Example (6-column):
 
@@ -440,7 +440,7 @@ Schema varies by analysis type:
 
 - `{out_file_pre}_concat_bucket_stats.nii.gz` — AFNI bucket dataset with condition betas, t-stats, and contrasts
 - `{out_file_pre}_concat_censor.1D` — generated censor file
-- `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
+- `{out_file_pre}_concat_motion_prepared.1D` — validated/truncated motion regressors
 - `{out_file_pre}_concat_{label}_onsets.txt` — per-condition AFNI onset files
 - `{out_file_pre}_qc_summary.json` — QC summary
 - Extracted parcel stats (if `extraction` enabled): CSV files with parcel-level statistics
@@ -449,7 +449,7 @@ Schema varies by analysis type:
 
 - `{out_file_pre}_concat_bseries_{condition}.nii.gz` — per-condition trial-level beta series from 3dLSS
 - `{out_file_pre}_concat_censor.1D` — generated censor file
-- `{out_file_pre}_concat_motion_prepared.txt` — validated/truncated motion regressors
+- `{out_file_pre}_concat_motion_prepared.1D` — validated/truncated motion regressors
 - `{out_file_pre}_qc_summary.json` — QC summary
 - Extracted parcel beta series (if `extraction` enabled): CSV files
 - Connectivity matrices (if `connectivity` enabled): tab-delimited text files
@@ -460,7 +460,7 @@ Schema varies by analysis type:
 - `{out_file_pre}_run{N}_residual_dtseries.nii.gz` — per-run residual time series from 3dTproject
 - `{out_file_pre}_concat_residual_dtseries.nii.gz` — concatenated residual time series
 - `{out_file_pre}_run{N}_censor.1D` — per-run generated censor files
-- `{out_file_pre}_run{N}_motion_prepared.txt` — per-run validated/truncated motion regressors
+- `{out_file_pre}_run{N}_motion_prepared.1D` — per-run validated/truncated motion regressors
 - `{out_file_pre}_qc_summary.json` — QC summary
 - Extracted parcel time series (if `extraction` enabled): CSV files
 - Connectivity matrices (if `connectivity` enabled): tab-delimited text files

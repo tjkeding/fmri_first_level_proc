@@ -480,8 +480,8 @@ The pipeline performs automatic QC checks during execution. All checks are logge
 
 After censoring, the pipeline checks how many trials per condition still have uncensored onsets:
 
-- **< 2 surviving trials:** The analysis aborts with an error. The condition cannot be reliably estimated.
-- **Exactly 2 surviving trials:** A warning is logged. The estimate will have very low power.
+- **< 2 surviving trials:** The condition is automatically dropped from the analysis with a warning. The pipeline continues with the remaining conditions. Any contrasts or extractions that depend on the dropped condition will also be skipped.
+- **Exactly 2 surviving trials:** A warning is logged. The estimate for this condition will have very low power, but the analysis proceeds.
 
 ### Degrees of Freedom Pre-Flight Check
 
@@ -505,3 +505,4 @@ run-first-level --config <path> [options]
 | `--dry-run` | flag | off | Validate the config and print the analysis plan without executing any analyses. |
 | `--analyses` | list of int | all | Run only specific analysis block indices (0-based). E.g. `--analyses 0 2` runs the first and third blocks. |
 | `--log-file` | str | none | Path to a log file. When set, logs are written to both console and file. |
+

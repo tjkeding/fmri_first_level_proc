@@ -439,6 +439,50 @@ def run(args, logger):
     args.motion_path = prepare_motion_file(
         args.motion_path, use_cols, args.out_dir, args.out_file_pre, "concat", logger)
 
+
+    # Get stimulus timing data and save AFNI-safe single-column .txt files
+    stim_data = get_stim_data(args, logger)
+
+    # Per-condition trial survival QC
+    trial_survival = check_trial_survival(stim_data, args.cond_labels, args.censor_path, args.tr, logger)
+
+    # Filter conditions by survival (minimum 2 trials required for AFNI estimation)
+    original_conds = list(args.cond_labels)
+    args.cond_labels = [c for c in original_conds if trial_survival.get(c, 0) >= 2]
+    dropped_conds = [c for c in original_conds if c not in args.cond_labels]
+
+    if dropped_conds:
+        logger.warning("The following conditions have insufficient surviving trials (< 2) and will be DROPPED: %s", dropped_conds)
+    
+    if not args.cond_labels:
+        logger.error("NO task conditions have sufficient surviving trials. Aborting analysis.")
+        sys.exit(1)
+
+    # Update contrast functions if any conditions were dropped
+    if args.contrast_functions and dropped_conds:
+        valid_contrasts = []
+        valid_labels = []
+        for i, cont in enumerate(args.contrast_functions):
+            if any(c in dropped_conds for c in cont["CONDS"]):
+                logger.warning("Contrast '%s' depends on dropped conditions %s and will be SKIPPED.", 
+                               args.contrast_labels[i], [c for c in cont["CONDS"] if c in dropped_conds])
+            else:
+                valid_contrasts.append(cont)
+                valid_labels.append(args.contrast_labels[i])
+        args.contrast_functions = valid_contrasts
+        args.contrast_labels = valid_labels
+
+    # Update extraction labels if any conditions were dropped
+    if args.extract and args.extract_labels:
+        original_extract = list(args.extract_labels)
+        args.extract_labels = [e for e in original_extract if e in args.cond_labels or e in args.contrast_labels]
+        dropped_extract = [e for e in original_extract if e not in args.extract_labels]
+        if dropped_extract:
+            logger.warning("The following extraction labels depend on dropped effects and will be SKIPPED: %s", dropped_extract)
+        if not args.extract_labels:
+            logger.warning("No valid effects left to extract. Disabling extraction.")
+            args.extract = False
+
     # Pre-flight DOF check
     n_regressors = use_cols + len(args.cond_labels)
     if args.CSF_path is not None:
@@ -451,12 +495,6 @@ def run(args, logger):
         if args.WM_path is not None:
             n_regressors += 1
     dof = compute_dof(args.censor_path, n_regressors, logger)
-
-    # Get stimulus timing data and save AFNI-safe single-column .txt files
-    stim_data = get_stim_data(args, logger)
-
-    # Per-condition trial survival QC
-    trial_survival = check_trial_survival(stim_data, args.cond_labels, args.censor_path, args.tr, logger)
 
     # Build QC summary data
     qc_data = {

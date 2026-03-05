@@ -448,13 +448,13 @@ def read_and_validate_stim_data(timing_path, cond_labels, logger=None):
     for cond in cond_labels:
         n_trials = len(sorted_df[sorted_df['CONDITION'] == cond])
         if n_trials == 0:
-            _log.error("Condition '%s' has 0 trials in the timing file. "
+            _log.warning("Condition '%s' has 0 trials in the timing file. "
                        "Cannot create onset file for a condition with no events.", cond)
-            sys.exit(1)
+            # sys.exit(1) - skipped for robustness
         elif n_trials < 2:
-            _log.error("Condition '%s' has only %d trial(s). At least 2 trials are required "
+            _log.warning("Condition '%s' has only %d trial(s). At least 2 trials are required "
                        "for a reliable estimate.", cond, n_trials)
-            sys.exit(1)
+            # sys.exit(1) - skipped for robustness
         elif n_trials < 3:
             _log.warning("Condition '%s' has only %d trial(s). Estimates may be unreliable.", cond, n_trials)
 
@@ -616,10 +616,9 @@ def check_trial_survival(stim_df, cond_labels, censor_path, tr, logger):
                 n_surviving += 1
         survival[cond] = n_surviving
         if n_surviving < 2:
-            logger.error("Condition '%s': only %d of %d trials survive censoring. "
-                         "Cannot reliably estimate this condition (minimum 2 required). Aborting.",
+            logger.warning("Condition '%s': only %d of %d trials survive censoring. "
+                         "Cannot reliably estimate this condition (minimum 2 required). Skipping.",
                          cond, n_surviving, n_total)
-            sys.exit(1)
         elif n_surviving == 2:
             logger.warning("Condition '%s': only 2 of %d trials survive censoring. "
                            "Estimate will have very low power.", cond, n_total)

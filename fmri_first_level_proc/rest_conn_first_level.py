@@ -8,8 +8,8 @@
 # 4. (optional) Runs functional connectivity analysis with AFNI's 3dNetCorr
 #
 # Author: Taylor J. Keding, Ph.D.
-# Version: 2.3
-# Last updated: 03/12/26
+# Version: 2.3.1
+# Last updated: 03/13/26
 # ============================================================================
 '''
 REQUIREMENTS:
@@ -194,7 +194,7 @@ def gen_residual_ts(args, logger):
                     if args.GS_paths is not None:
                         gs_deriv = compute_tissue_derivative(args.GS_paths[i], args.out_dir, args.out_file_pre, f"run{i+1}_GS", logger)
                         tproj_command.extend(["-ort", gs_deriv])
-                tproj_command.extend(["-polort", "2"])  # Field consensus with bandpass
+                tproj_command.extend(["-polort", "-1"])  # Field consensus with bandpass
                 if args.bandpass is not None:
                     tproj_command.extend(["-bandpass", str(args.bandpass[0]), str(args.bandpass[1])])
                 tproj_command.extend(["-prefix", run_out])

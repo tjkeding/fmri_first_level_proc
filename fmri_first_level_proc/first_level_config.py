@@ -7,8 +7,8 @@
 # compatible with each script's run() function.
 #
 # Author: Taylor J. Keding, Ph.D.
-# Version: 2.3
-# Last updated: 03/12/26
+# Version: 2.3.1
+# Last updated: 03/13/26
 # ============================================================================
 """
 YAML configuration loader, validator, and namespace builder for fmri_first_level_proc.

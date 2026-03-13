@@ -5,8 +5,8 @@
 # Common functions used across task_act, task_conn, and rest_conn pipelines.
 #
 # Author: Taylor J. Keding, Ph.D.
-# Version: 2.3
-# Last updated: 03/12/26
+# Version: 2.3.1
+# Last updated: 03/13/26
 # ============================================================================
 """
 Shared utility functions for the fmri_first_level_proc package.
